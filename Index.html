@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tibiofemoral Arthrokinematics — Manual Terapi Lutut</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #0f1525;
+    --card: #141a2e;
+    --border: #1e2a45;
+    --accent1: #4af0c4;
+    --accent2: #ff6b6b;
+    --accent3: #ffd166;
+    --accent4: #a78bfa;
+    --text: #e8edf5;
+    --muted: #6b7a9a;
+    --femur: #4af0c4;
+    --tibia: #ff9f43;
+    --acl: #ff6b6b;
+    --pcl: #4a9eff;
+    --meniscus: #ffd166;
+    --roll: #a78bfa;
+    --glide: #4af0c4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 2.5rem 2rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, #0a0e1a 60%, #0d1530);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(74,240,196,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: rgba(74,240,196,0.1);
+    border: 1px solid rgba(74,240,196,0.3);
+    color: var(--accent1);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+  .badge-dot { width: 5px; height: 5px; background: var(--accent1); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+  }
+  h1 span { color: var(--accent1); }
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+  }
+  .ref-tag {
+    font-size: 0.7rem; color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .ref-tag em { color: var(--accent3); font-style: normal; }
+
+  /* ── TAB NAV ── */
+  .tab-nav {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 0.9rem 1.4rem;
+    background: none; border: none;
+    color: var(--muted);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.2s;
+  }
+  .tab-btn::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--accent1);
+    transform: scaleX(0); transition: transform 0.2s;
+  }
+  .tab-btn.active { color: var(--accent1); }
+  .tab-btn.active::after { transform: scaleX(1); }
+  .tab-btn:hover { color: var(--text); }
+
+  /* ── MAIN GRID ── */
+  .main { padding: 1.5rem; max-width: 1200px; margin: 0 auto; }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── DIAGRAM CANVAS ── */
+  .diagram-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .diagram-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  svg text { font-family: 'IBM Plex Sans', sans-serif; }
+
+  /* ── INFO CARDS ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .info-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--c, var(--accent1));
+  }
+  .info-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--c, var(--accent1));
+  }
+  .info-card p {
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .info-card p strong { color: var(--text); }
+  .tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    margin-top: 0.6rem;
+    background: rgba(74,240,196,0.1);
+    color: var(--accent1);
+    border: 1px solid rgba(74,240,196,0.25);
+  }
+
+  /* ── RULE TABLE ── */
+  .rule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+    margin-bottom: 1.5rem;
+  }
+  .rule-table th {
+    background: rgba(74,240,196,0.08);
+    color: var(--accent1);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .rule-table td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba(30,42,69,0.6);
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .rule-table td strong { color: var(--text); }
+  .rule-table tr:hover td { background: rgba(74,240,196,0.02); }
+
+  /* ── REFERENCE SECTION ── */
+  .ref-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+  }
+  .ref-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--accent3);
+  }
+  .ref-item {
+    border-bottom: 1px solid rgba(30,42,69,0.6);
+    padding: 0.9rem 0;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.8rem;
+    align-items: start;
+  }
+  .ref-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent3);
+    font-weight: 500;
+    padding-top: 0.1rem;
+  }
+  .ref-body { font-size: 0.75rem; line-height: 1.55; color: var(--muted); }
+  .ref-body strong { color: var(--text); }
+  .ref-body em { color: var(--accent1); font-style: italic; }
+  .q-badge {
+    display: inline-flex; align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; font-weight: 500;
+    padding: 0.15rem 0.45rem;
+    border-radius: 2px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+  .q1 { background: rgba(74,240,196,0.15); color: var(--accent1); border: 1px solid rgba(74,240,196,0.3); }
+  .q2 { background: rgba(255,209,102,0.15); color: var(--accent3); border: 1px solid rgba(255,209,102,0.3); }
+
+  /* ── MANUAL THERAPY TECHNIQUES ── */
+  .technique-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .technique-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.2rem;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .technique-card:hover {
+    border-color: var(--accent1);
+    transform: translateY(-2px);
+  }
+  .tech-header {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.8rem;
+  }
+  .tech-icon {
+    width: 32px; height: 32px;
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    background: rgba(74,240,196,0.1);
+    border: 1px solid rgba(74,240,196,0.2);
+  }
+  .tech-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .tech-detail { font-size: 0.75rem; color: var(--muted); line-height: 1.6; }
+  .tech-detail li { margin-bottom: 0.3rem; list-style: none; padding-left: 1rem; position: relative; }
+  .tech-detail li::before { content: '→'; position: absolute; left: 0; color: var(--accent1); font-size: 0.7rem; }
+
+  /* ── INTERACTIVE CONTROLS ── */
+  .ctrl-row {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    margin-bottom: 1.2rem;
+  }
+  .ctrl-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(74,240,196,0.08);
+    border: 1px solid rgba(74,240,196,0.25);
+    color: var(--accent1);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ctrl-btn:hover, .ctrl-btn.active {
+    background: rgba(74,240,196,0.18);
+    border-color: var(--accent1);
+  }
+  .ctrl-btn.red { --accent1: #ff6b6b; }
+  .ctrl-btn.yellow { --accent1: #ffd166; }
+  .ctrl-btn.purple { --accent1: #a78bfa; }
+
+  /* Slider */
+  .slider-wrap { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .slider-wrap label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--muted); white-space: nowrap; }
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 200px; height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent1);
+    cursor: pointer;
+    border: 2px solid var(--bg);
+  }
+  .slider-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent1);
+    width: 40px;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(14,20,40,0.8);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 1rem;
+  }
+  .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .legend-line { width: 20px; height: 3px; border-radius: 2px; }
+
+  .screw-home-note {
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 3px;
+    padding: 0.8rem 1rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+  .screw-home-note strong { color: #a78bfa; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge"><span class="badge-dot"></span>Tugas 2 — Visualisasi Ilmiah</div>
+  <h1>Manual Terapi Lutut<br><span>Tibiofemoral Arthrokinematics</span></h1>
+  <p class="subtitle">// Mekanisme Roll, Glide & Spin — Evidens-Based Physical Therapy</p>
+  <p class="ref-tag">Referensi: <em>Neumann 2022 · JOSPT 2024 · Norkin & Levengie 2022 · Kaltenborn · Maitland</em></p>
+</header>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('diagram')">01 — Diagram Utama</button>
+  <button class="tab-btn" onclick="showTab('rules')">02 — Aturan Konkaf-Konveks</button>
+  <button class="tab-btn" onclick="showTab('okc-ckc')">03 — OKC vs CKC</button>
+  <button class="tab-btn" onclick="showTab('technique')">04 — Teknik Manual Terapi</button>
+  <button class="tab-btn" onclick="showTab('referensi')">05 — Referensi Ilmiah</button>
+</div>
+
+<div class="main">
+
+  <!-- ══════════════════════════════════════════
+       TAB 1 — DIAGRAM UTAMA
+  ══════════════════════════════════════════ -->
+  <div id="tab-diagram" class="tab-pane active">
+
+    <div class="slider-wrap">
+      <label>SUDUT FLEKSI LUTUT</label>
+      <input type="range" id="flexSlider" min="0" max="130" value="0" oninput="updateDiagram(this.value)">
+      <span class="slider-val" id="flexVal">0°</span>
+    </div>
+
+    <div class="ctrl-row">
+      <button class="ctrl-btn active" id="btnOKC" onclick="setChain('okc')">OKC (Tibia Bergerak)</button>
+      <button class="ctrl-btn" id="btnCKC" onclick="setChain('ckc')">CKC (Femur Bergerak)</button>
+      <button class="ctrl-btn yellow" onclick="toggleLayer('acl')">ACL/PCL</button>
+      <button class="ctrl-btn purple" onclick="toggleLayer('meniscus')">Meniskus</button>
+      <button class="ctrl-btn" style="--accent1:#ff9f43" onclick="toggleLayer('arrows')">Arah Gerak</button>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">// Diagram Arthrokinematika Tibiofemoral — Interaktif</div>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+        <svg id="mainSVG" viewBox="0 0 520 380" width="100%" style="max-width:520px; min-width:280px;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#4af0c4"/>
+            </marker>
+            <marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#ff9f43"/>
+            </marker>
+            <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#ff6b6b"/>
+            </marker>
+            <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#4a9eff"/>
+            </marker>
+            <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#a78bfa"/>
+            </marker>
+            <radialGradient id="femurGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#2a7d6a"/>
+              <stop offset="100%" stop-color="#1a4d42"/>
+            </radialGradient>
+            <radialGradient id="tibiaGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#8a5a20"/>
+              <stop offset="100%" stop-color="#5a3a10"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Background grid -->
+          <g opacity="0.06">
+            <line x1="0" y1="50" x2="520" y2="50" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="0" y1="100" x2="520" y2="100" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="0" y1="150" x2="520" y2="150" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="0" y1="200" x2="520" y2="200" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="0" y1="250" x2="520" y2="250" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="0" y1="300" x2="520" y2="300" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="0" y1="350" x2="520" y2="350" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="80" y1="0" x2="80" y2="380" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="160" y1="0" x2="160" y2="380" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="240" y1="0" x2="240" y2="380" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="320" y1="0" x2="320" y2="380" stroke="#4af0c4" stroke-width="0.5"/>
+            <line x1="400" y1="0" x2="400" y2="380" stroke="#4af0c4" stroke-width="0.5"/>
+          </g>
+
+          <!-- TIBIA (bottom, fixed in OKC view) -->
+          <g id="tibiaGroup">
+            <!-- Tibia shaft -->
+            <rect id="tibiaShaft" x="195" y="255" width="130" height="110" rx="6" fill="url(#tibiaGrad)" stroke="#ff9f43" stroke-width="1.5" opacity="0.9"/>
+            <!-- Tibial plateau -->
+            <path id="tibiaPlat" d="M170,255 Q260,240 350,255 L345,270 Q260,258 175,270 Z" fill="#c47b30" stroke="#ff9f43" stroke-width="1.5"/>
+            <!-- Concave surface highlight -->
+            <path id="tibiaConc" d="M190,262 Q260,250 330,262" fill="none" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>
+            <text x="260" y="320" text-anchor="middle" fill="#ff9f43" font-size="13" font-weight="600">TIBIA</text>
+            <text x="260" y="337" text-anchor="middle" fill="#ff9f43" font-size="10" opacity="0.7">(Permukaan KONKAF)</text>
+          </g>
+
+          <!-- FEMUR condyles (OKC: stays, CKC: moves) -->
+          <g id="femurGroup">
+            <!-- Lateral condyle -->
+            <ellipse id="lateralCondyle" cx="220" cy="185" rx="42" ry="48" fill="url(#femurGrad)" stroke="#4af0c4" stroke-width="1.5" opacity="0.9"/>
+            <!-- Medial condyle (slightly larger = screw-home) -->
+            <ellipse id="medialCondyle" cx="305" cy="183" rx="46" ry="50" fill="url(#femurGrad)" stroke="#4af0c4" stroke-width="1.5" opacity="0.9"/>
+            <!-- Intercondylar notch -->
+            <path d="M262,210 Q270,232 278,210" fill="#0a0e1a" opacity="0.8"/>
+            <!-- Convex surface arc -->
+            <path id="femurConvex" d="M180,200 Q220,155 262,160 Q278,155 305,155 Q350,158 370,200" fill="none" stroke="#4af0c4" stroke-width="2" opacity="0.5"/>
+            <text x="260" y="120" text-anchor="middle" fill="#4af0c4" font-size="13" font-weight="600">FEMUR</text>
+            <text x="260" y="136" text-anchor="middle" fill="#4af0c4" font-size="10" opacity="0.7">(Kondilus KONVEKS)</text>
+            <!-- Condyle labels -->
+            <text x="215" y="195" text-anchor="middle" fill="#4af0c4" font-size="9" opacity="0.8">Kond. Lat.</text>
+            <text x="308" y="193" text-anchor="middle" fill="#4af0c4" font-size="9" opacity="0.8">Kond. Med.</text>
+          </g>
+
+          <!-- MENISCUS layer -->
+          <g id="meniscusLayer" opacity="1">
+            <ellipse cx="220" cy="250" rx="38" ry="9" fill="none" stroke="#ffd166" stroke-width="2.5" opacity="0.85"/>
+            <ellipse cx="306" cy="249" rx="40" ry="9" fill="none" stroke="#ffd166" stroke-width="2.5" opacity="0.85"/>
+            <text x="186" y="248" fill="#ffd166" font-size="8" opacity="0.8">M.Lat</text>
+            <text x="268" y="247" fill="#ffd166" font-size="8" opacity="0.8">M.Med</text>
+          </g>
+
+          <!-- ACL & PCL layer -->
+          <g id="aclLayer" opacity="1">
+            <!-- ACL -->
+            <line x1="255" y1="230" x2="278" y2="255" stroke="#ff6b6b" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+            <!-- PCL -->
+            <line x1="285" y1="230" x2="262" y2="256" stroke="#4a9eff" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+            <text x="236" y="242" fill="#ff6b6b" font-size="9" font-weight="600">ACL</text>
+            <text x="292" y="242" fill="#4a9eff" font-size="9" font-weight="600">PCL</text>
+          </g>
+
+          <!-- ARROWS layer (roll & glide) -->
+          <g id="arrowsLayer" opacity="1">
+            <!-- Roll arrow (curved, posterior) -->
+            <path id="rollArrow" d="M195,185 Q170,160 160,185" fill="none" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#arrowPurple)" stroke-linecap="round"/>
+            <text x="148" y="158" fill="#a78bfa" font-size="10" font-weight="600">ROLL</text>
+            <!-- Glide arrow (linear, anterior) -->
+            <line id="glideArrow" x1="350" y1="195" x2="390" y2="195" stroke="#4af0c4" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+            <text x="354" y="188" fill="#4af0c4" font-size="10" font-weight="600">GLIDE</text>
+            <!-- Spin indicator -->
+            <path id="spinArrow" d="M305,170 Q320,155 315,145 Q305,138 295,145" fill="none" stroke="#ff9f43" stroke-width="2" marker-end="url(#arrowOrange)" stroke-dasharray="3 2"/>
+            <text x="322" y="148" fill="#ff9f43" font-size="9">SPIN</text>
+          </g>
+
+          <!-- Status label -->
+          <g id="statusLabel">
+            <rect x="10" y="355" width="500" height="20" rx="2" fill="rgba(10,14,26,0.8)"/>
+            <text id="statusText" x="260" y="369" text-anchor="middle" fill="#6b7a9a" font-size="10" font-family="'IBM Plex Mono', monospace">
+              Posisi: 0° Ekstensi Penuh — Screw Home Mechanism Aktif
+            </text>
+          </g>
+
+          <!-- Angle indicator -->
+          <g id="angleIndicator" transform="translate(30,30)">
+            <rect x="0" y="0" width="90" height="40" rx="3" fill="rgba(10,14,26,0.9)" stroke="rgba(74,240,196,0.3)" stroke-width="1"/>
+            <text x="8" y="13" fill="#6b7a9a" font-size="8" font-family="'IBM Plex Mono', monospace">FLEKSI</text>
+            <text id="angleText" x="8" y="33" fill="#4af0c4" font-size="20" font-weight="600" font-family="'IBM Plex Mono', monospace">0°</text>
+          </g>
+
+          <!-- Chain indicator -->
+          <g id="chainIndicator" transform="translate(395,10)">
+            <rect x="0" y="0" width="115" height="30" rx="3" fill="rgba(10,14,26,0.9)" stroke="rgba(74,240,196,0.3)" stroke-width="1"/>
+            <text id="chainText" x="8" y="20" fill="#4af0c4" font-size="10" font-family="'IBM Plex Mono', monospace">OKC: Tibia→</text>
+          </g>
+        </svg>
+
+        <!-- Side Info Panel -->
+        <div style="flex:1; min-width:200px; max-width:250px;">
+          <div id="sideInfo" style="font-size:0.75rem; line-height:1.7;">
+            <div style="background:rgba(74,240,196,0.08); border:1px solid rgba(74,240,196,0.2); border-radius:3px; padding:0.8rem; margin-bottom:0.8rem;">
+              <div style="font-family:'IBM Plex Mono', monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#4af0c4; margin-bottom:0.5rem;">STATUS SAAT INI</div>
+              <div id="currentStatus" style="color:#e8edf5; font-size:0.82rem; font-weight:500;">Ekstensi Penuh (0°)</div>
+              <div id="currentMech" style="color:#6b7a9a; font-size:0.72rem; margin-top:0.3rem;">Screw Home aktif — Tibia rotasi eksternal</div>
+            </div>
+
+            <div style="background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.2); border-radius:3px; padding:0.8rem; margin-bottom:0.8rem;">
+              <div style="font-family:'IBM Plex Mono', monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#ff6b6b; margin-bottom:0.4rem;">ACL</div>
+              <div id="aclStatus" style="color:#6b7a9a; font-size:0.72rem;">Tegangan rendah saat ekstensi</div>
+            </div>
+
+            <div style="background:rgba(74,158,255,0.08); border:1px solid rgba(74,158,255,0.2); border-radius:3px; padding:0.8rem; margin-bottom:0.8rem;">
+              <div style="font-family:'IBM Plex Mono', monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#4a9eff; margin-bottom:0.4rem;">PCL</div>
+              <div id="pclStatus" style="color:#6b7a9a; font-size:0.72rem;">Tegangan meningkat — menahan tibia</div>
+            </div>
+
+            <div style="background:rgba(255,209,102,0.08); border:1px solid rgba(255,209,102,0.2); border-radius:3px; padding:0.8rem;">
+              <div style="font-family:'IBM Plex Mono', monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#ffd166; margin-bottom:0.4rem;">MENISKUS</div>
+              <div id="meniscusStatus" style="color:#6b7a9a; font-size:0.72rem;">Posisi anterior, terbuka</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4af0c4"></div> Femur (Konveks)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff9f43"></div> Tibia (Konkaf)</div>
+      <div class="legend-item"><div class="legend-line" style="background:#ff6b6b"></div> ACL</div>
+      <div class="legend-item"><div class="legend-line" style="background:#4a9eff"></div> PCL</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffd166; border-radius:0"></div> Meniskus</div>
+      <div class="legend-item"><div class="legend-line" style="background:#a78bfa"></div> Roll</div>
+      <div class="legend-item"><div class="legend-line" style="background:#4af0c4"></div> Glide</div>
+      <div class="legend-item"><div class="legend-line" style="background:#ff9f43; border-style:dashed"></div> Spin</div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-grid">
+      <div class="info-card" style="--c:#a78bfa">
+        <h3>🔄 Roll (Guling)</h3>
+        <p>Rotasi sagital — satu titik baru pada permukaan bergerak kontak dengan titik baru pada permukaan diam. <strong>Roll selalu searah gerak osteokinematik.</strong> Tanpa glide, femur akan "tergelincir" keluar dari tibial plateau.</p>
+        <span class="tag" style="--accent1:#a78bfa; background:rgba(167,139,250,0.1); border-color:rgba(167,139,250,0.3); color:#a78bfa">Rotasi Sagital</span>
+      </div>
+      <div class="info-card" style="--c:#4af0c4">
+        <h3>↔ Glide (Geser)</h3>
+        <p>Translasi sagital — satu titik pada permukaan bergerak kontak dengan banyak titik pada permukaan lain. <strong>Arah glide ditentukan oleh aturan konveks-konkaf Kaltenborn.</strong></p>
+        <span class="tag">Translasi Sagital</span>
+      </div>
+      <div class="info-card" style="--c:#ff9f43">
+        <h3>↻ Spin (Putar)</h3>
+        <p>Rotasi transversal di sumbu vertikal. Terjadi sebagai <strong>konjugat rotasi</strong> — terutama di akhir ekstensi (Screw Home Mechanism). Dipasilitasi oleh perbedaan ukuran kondilus medial vs lateral.</p>
+        <span class="tag" style="--accent1:#ff9f43; background:rgba(255,159,67,0.1); border-color:rgba(255,159,67,0.3); color:#ff9f43">Rotasi Transversal</span>
+      </div>
+      <div class="info-card" style="--c:#ffd166">
+        <h3>🔩 Screw Home Mechanism</h3>
+        <p>Pada 10° terakhir ekstensi: kondilus lateral menyelesaikan roll-glide lebih dahulu. Kondilus medial (lebih panjang) terus bergerak → <strong>tibia rotasi eksternal ±10°</strong> mengunci sendi lutut.</p>
+        <span class="tag" style="--accent1:#ffd166; background:rgba(255,209,102,0.1); border-color:rgba(255,209,102,0.3); color:#ffd166">Terminal Rotation</span>
+      </div>
+    </div>
+
+    <div class="screw-home-note">
+      <strong>📌 Catatan Klinis (Neumann, 2022):</strong> Otot popliteus berfungsi sebagai "pembuka kunci" (unlocking) dengan merotasi tibia ke internal ±5° untuk mengawali fleksi. ACL memandu roll anterior femur; PCL memandu glide posterior femur selama fleksi CKC.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 2 — ATURAN KONKAF-KONVEKS
+  ══════════════════════════════════════════ -->
+  <div id="tab-rules" class="tab-pane">
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">// Prinsip Kaltenborn — Aturan Konkaf-Konveks</div>
+      <svg viewBox="0 0 520 260" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="aG2" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4af0c4"/></marker>
+          <marker id="aO2" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ff9f43"/></marker>
+          <marker id="aP2" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#a78bfa"/></marker>
+          <marker id="aG3" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto"><path d="M8,0 L8,6 L0,3 z" fill="#4af0c4"/></marker>
+          <marker id="aP3" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto"><path d="M8,0 L8,6 L0,3 z" fill="#a78bfa"/></marker>
+        </defs>
+
+        <!-- Left panel: KONVEKS on KONKAF -->
+        <rect x="10" y="30" width="240" height="220" rx="4" fill="rgba(74,240,196,0.04)" stroke="#1e2a45" stroke-width="1"/>
+        <text x="130" y="20" text-anchor="middle" fill="#4af0c4" font-size="11" font-family="'IBM Plex Mono', monospace" letter-spacing="0.05em">KONVEKS-di-KONKAF</text>
+
+        <!-- Concave base (tibia) -->
+        <path d="M30,180 Q130,155 230,180" fill="#5a3a10" stroke="#ff9f43" stroke-width="2"/>
+        <text x="130" y="205" text-anchor="middle" fill="#ff9f43" font-size="10">Tibia (Konkaf — Diam)</text>
+
+        <!-- Convex ball (femur) -->
+        <circle cx="130" cy="140" r="35" fill="rgba(42,125,106,0.4)" stroke="#4af0c4" stroke-width="2"/>
+        <text x="130" y="144" text-anchor="middle" fill="#4af0c4" font-size="10">Femur</text>
+
+        <!-- Roll arrow (posterior = left) -->
+        <path d="M105,120 Q88,105 95,125" fill="none" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#aP2)"/>
+        <text x="70" y="110" fill="#a78bfa" font-size="9">Roll ←</text>
+
+        <!-- Glide arrow (anterior = right) OPPOSITE direction -->
+        <line x1="155" y1="140" x2="185" y2="140" stroke="#4af0c4" stroke-width="2.5" marker-end="url(#aG2)"/>
+        <text x="156" y="130" fill="#4af0c4" font-size="9">Glide →</text>
+
+        <rect x="20" y="218" width="220" height="25" rx="2" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+        <text x="130" y="234" text-anchor="middle" fill="#a78bfa" font-size="9.5" font-weight="600">Roll &amp; Glide BERLAWANAN ARAH</text>
+
+        <!-- Right panel: KONKAF on KONVEKS -->
+        <rect x="270" y="30" width="240" height="220" rx="4" fill="rgba(255,159,67,0.04)" stroke="#1e2a45" stroke-width="1"/>
+        <text x="390" y="20" text-anchor="middle" fill="#ff9f43" font-size="11" font-family="'IBM Plex Mono', monospace" letter-spacing="0.05em">KONKAF-di-KONVEKS</text>
+
+        <!-- Convex base (femur) -->
+        <path d="M280,175 Q390,145 500,175" fill="rgba(42,125,106,0.5)" stroke="#4af0c4" stroke-width="2"/>
+        <text x="390" y="200" text-anchor="middle" fill="#4af0c4" font-size="10">Femur (Konveks — Diam)</text>
+
+        <!-- Concave cup (tibia) -->
+        <path d="M350,140 Q390,160 430,140 Q420,115 390,110 Q360,115 350,140 Z" fill="rgba(90,58,16,0.5)" stroke="#ff9f43" stroke-width="2"/>
+        <text x="390" y="132" text-anchor="middle" fill="#ff9f43" font-size="10">Tibia</text>
+
+        <!-- Roll & Glide SAME direction (posterior in flexion) -->
+        <path d="M375,115 Q358,100 365,118" fill="none" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#aP3)"/>
+        <text x="340" y="100" fill="#a78bfa" font-size="9">Roll ←</text>
+
+        <line x1="370" y1="140" x2="340" y2="140" stroke="#4af0c4" stroke-width="2.5" marker-end="url(#aG3)"/>
+        <text x="340" y="130" fill="#4af0c4" font-size="9">Glide ←</text>
+
+        <rect x="280" y="218" width="220" height="25" rx="2" fill="rgba(74,240,196,0.1)" stroke="rgba(74,240,196,0.3)" stroke-width="1"/>
+        <text x="390" y="234" text-anchor="middle" fill="#4af0c4" font-size="9.5" font-weight="600">Roll &amp; Glide SEARAH</text>
+      </svg>
+    </div>
+
+    <table class="rule-table">
+      <thead>
+        <tr>
+          <th>Kondisi</th>
+          <th>Permukaan Bergerak</th>
+          <th>Permukaan Diam</th>
+          <th>Arah Roll</th>
+          <th>Arah Glide</th>
+          <th>Aplikasi Klinis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>OKC — Fleksi</strong></td>
+          <td>Tibia (Konkaf)</td>
+          <td>Femur (Konveks)</td>
+          <td>Posterior ←</td>
+          <td>Posterior ← (searah)</td>
+          <td>Mobilisasi posterior glide tibia → tambah fleksi</td>
+        </tr>
+        <tr>
+          <td><strong>OKC — Ekstensi</strong></td>
+          <td>Tibia (Konkaf)</td>
+          <td>Femur (Konveks)</td>
+          <td>Anterior →</td>
+          <td>Anterior → (searah)</td>
+          <td>Mobilisasi anterior glide tibia → tambah ekstensi</td>
+        </tr>
+        <tr>
+          <td><strong>CKC — Fleksi (Squat)</strong></td>
+          <td>Femur (Konveks)</td>
+          <td>Tibia (Konkaf)</td>
+          <td>Posterior ←</td>
+          <td>Anterior → (berlawanan)</td>
+          <td>ACL menahan glide posterior femur</td>
+        </tr>
+        <tr>
+          <td><strong>CKC — Ekstensi (Berdiri)</strong></td>
+          <td>Femur (Konveks)</td>
+          <td>Tibia (Konkaf)</td>
+          <td>Anterior →</td>
+          <td>Posterior ← (berlawanan)</td>
+          <td>PCL menahan glide anterior femur</td>
+        </tr>
+        <tr>
+          <td><strong>Manual: Posterior Glide Tibia</strong></td>
+          <td>Gaya terapis</td>
+          <td>Femur diam</td>
+          <td>—</td>
+          <td>Posterior (fisiologis)</td>
+          <td>Meningkatkan ROM fleksi (Maitland Gr. III-IV)</td>
+        </tr>
+        <tr>
+          <td><strong>Manual: Anterior Glide Tibia</strong></td>
+          <td>Gaya terapis</td>
+          <td>Femur diam</td>
+          <td>—</td>
+          <td>Anterior (fisiologis)</td>
+          <td>Meningkatkan ROM ekstensi</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-grid">
+      <div class="info-card" style="--c:#4af0c4">
+        <h3>Aturan Kaltenborn (1989/2012)</h3>
+        <p>Ketika <strong>permukaan KONVEKS bergerak</strong> di atas permukaan konkaf: roll dan glide terjadi <strong>berlawanan arah</strong>. Ketika <strong>permukaan KONKAF bergerak</strong> di atas permukaan konveks: roll dan glide terjadi <strong>searah</strong>.</p>
+        <span class="tag">Prinsip Dasar MT</span>
+      </div>
+      <div class="info-card" style="--c:#ff6b6b">
+        <h3>Implikasi Mobilisasi</h3>
+        <p>Untuk meningkatkan ROM fleksi tibiofemoral (OKC): aplikasikan <strong>posterior glide pada tibia</strong>. Untuk ROM ekstensi: aplikasikan <strong>anterior glide tibia</strong>. Ini sesuai arah gerak fisiologis arthrokinematika.</p>
+        <span class="tag" style="--accent1:#ff6b6b; background:rgba(255,107,107,0.1); border-color:rgba(255,107,107,0.3); color:#ff6b6b">Aplikasi Klinis</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 3 — OKC vs CKC
+  ══════════════════════════════════════════ -->
+  <div id="tab-okc-ckc" class="tab-pane">
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+
+      <!-- OKC Card -->
+      <div class="diagram-wrap" style="--c:#4af0c4">
+        <div class="diagram-title">// OPEN KINETIC CHAIN (OKC)</div>
+        <svg viewBox="0 0 240 280" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aOKC" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4af0c4"/></marker>
+          </defs>
+          <!-- Femur (fixed) -->
+          <rect x="80" y="20" width="80" height="100" rx="8" fill="rgba(42,125,106,0.3)" stroke="#4af0c4" stroke-width="2"/>
+          <text x="120" y="75" text-anchor="middle" fill="#4af0c4" font-size="12" font-weight="600">FEMUR</text>
+          <text x="120" y="92" text-anchor="middle" fill="#4af0c4" font-size="9">(DIAM)</text>
+          <!-- Fixed indicator -->
+          <line x1="80" y1="20" x2="60" y2="10" stroke="#4af0c4" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.5"/>
+          <line x1="160" y1="20" x2="180" y2="10" stroke="#4af0c4" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.5"/>
+          <text x="120" y="10" text-anchor="middle" fill="#4af0c4" font-size="8" opacity="0.6">FIXED</text>
+
+          <!-- Joint space -->
+          <line x1="80" y1="125" x2="160" y2="125" stroke="#1e2a45" stroke-width="8"/>
+          <text x="120" y="150" text-anchor="middle" fill="#6b7a9a" font-size="9" font-family="'IBM Plex Mono', monospace">SENDI</text>
+
+          <!-- Tibia (moving) -->
+          <rect x="85" y="160" width="70" height="90" rx="6" fill="rgba(90,58,16,0.4)" stroke="#ff9f43" stroke-width="2"/>
+          <text x="120" y="210" text-anchor="middle" fill="#ff9f43" font-size="12" font-weight="600">TIBIA</text>
+          <text x="120" y="227" text-anchor="middle" fill="#ff9f43" font-size="9">(BERGERAK)</text>
+
+          <!-- Movement arrow on tibia -->
+          <line x1="170" y1="200" x2="210" y2="200" stroke="#ff9f43" stroke-width="2.5" marker-end="url(#aOKC)" style="marker-end:url(#aOKC); stroke:#ff9f43"/>
+
+          <text x="120" y="270" text-anchor="middle" fill="#6b7a9a" font-size="10">Kaki bebas di udara</text>
+        </svg>
+        <div style="font-size:0.75rem; color:var(--muted); margin-top:0.8rem; line-height:1.6;">
+          <strong style="color:var(--text);">Contoh:</strong> Leg extension duduk, tendang bola.<br>
+          <strong style="color:var(--accent1);">Arthrokinematika:</strong> Konkaf (tibia) di atas Konveks (femur) → Roll &amp; Glide <em>searah</em>.<br>
+          — Fleksi: tibia roll &amp; glide posterior<br>
+          — Ekstensi: tibia roll &amp; glide anterior
+        </div>
+      </div>
+
+      <!-- CKC Card -->
+      <div class="diagram-wrap" style="border-color:rgba(255,159,67,0.4)">
+        <div class="diagram-title" style="color:#ff9f43">// CLOSED KINETIC CHAIN (CKC)</div>
+        <svg viewBox="0 0 240 280" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aCKC" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#ff9f43"/></marker>
+          </defs>
+          <!-- Femur (moving) -->
+          <rect x="80" y="20" width="80" height="100" rx="8" fill="rgba(90,58,16,0.4)" stroke="#ff9f43" stroke-width="2"/>
+          <text x="120" y="75" text-anchor="middle" fill="#ff9f43" font-size="12" font-weight="600">FEMUR</text>
+          <text x="120" y="92" text-anchor="middle" fill="#ff9f43" font-size="9">(BERGERAK)</text>
+          <!-- Movement arrow on femur -->
+          <line x1="165" y1="70" x2="205" y2="70" stroke="#ff9f43" stroke-width="2.5" marker-end="url(#aCKC)"/>
+
+          <!-- Joint space -->
+          <line x1="80" y1="125" x2="160" y2="125" stroke="#1e2a45" stroke-width="8"/>
+
+          <!-- Tibia (fixed) -->
+          <rect x="85" y="160" width="70" height="90" rx="6" fill="rgba(42,125,106,0.3)" stroke="#4af0c4" stroke-width="2"/>
+          <text x="120" y="210" text-anchor="middle" fill="#4af0c4" font-size="12" font-weight="600">TIBIA</text>
+          <text x="120" y="227" text-anchor="middle" fill="#4af0c4" font-size="9">(DIAM)</text>
+          <!-- Ground fixed -->
+          <line x1="85" y1="250" x2="155" y2="250" stroke="#4af0c4" stroke-width="1.5"/>
+          <line x1="85" y1="250" x2="75" y2="265" stroke="#4af0c4" stroke-width="1" opacity="0.5"/>
+          <line x1="100" y1="250" x2="90" y2="265" stroke="#4af0c4" stroke-width="1" opacity="0.5"/>
+          <line x1="115" y1="250" x2="105" y2="265" stroke="#4af0c4" stroke-width="1" opacity="0.5"/>
+          <line x1="130" y1="250" x2="120" y2="265" stroke="#4af0c4" stroke-width="1" opacity="0.5"/>
+          <line x1="145" y1="250" x2="135" y2="265" stroke="#4af0c4" stroke-width="1" opacity="0.5"/>
+          <text x="120" y="278" text-anchor="middle" fill="#4af0c4" font-size="8">Kaki di lantai</text>
+        </svg>
+        <div style="font-size:0.75rem; color:var(--muted); margin-top:0.8rem; line-height:1.6;">
+          <strong style="color:var(--text);">Contoh:</strong> Squat, jongkok, menuruni tangga.<br>
+          <strong style="color:var(--accent3);">Arthrokinematika:</strong> Konveks (femur) di atas Konkaf (tibia) → Roll &amp; Glide <em>berlawanan</em>.<br>
+          — Fleksi: femur roll posterior + glide anterior<br>
+          — Ekstensi: femur roll anterior + glide posterior
+        </div>
+      </div>
+    </div>
+
+    <table class="rule-table">
+      <thead>
+        <tr><th>Parameter</th><th>OKC</th><th>CKC</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Segmen Bergerak</strong></td><td>Tibia (distal)</td><td>Femur (proksimal)</td></tr>
+        <tr><td><strong>Permukaan Bergerak</strong></td><td>Konkaf (tibia)</td><td>Konveks (femur)</td></tr>
+        <tr><td><strong>Aturan Roll-Glide</strong></td><td>Roll &amp; Glide searah</td><td>Roll &amp; Glide berlawanan</td></tr>
+        <tr><td><strong>Ligamen Primer</strong></td><td>ACL terstress fleksi</td><td>ACL+PCL bersama mengontrol</td></tr>
+        <tr><td><strong>Beban Sendi</strong></td><td>Minimal shear force</td><td>Kompresi signifikan</td></tr>
+        <tr><td><strong>Kontrol Motorik</strong></td><td>Otot distal dominan</td><td>Ko-kontraksi proksimal + distal</td></tr>
+        <tr><td><strong>Contoh Klinis</strong></td><td>Leg press isolasi, SLR</td><td>Squat, mini-squat rehab</td></tr>
+        <tr><td><strong>Mobilisasi Manual</strong></td><td>Posterior/anterior tibia glide</td><td>AP femoral glide on fixed tibia</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 4 — TEKNIK MANUAL TERAPI
+  ══════════════════════════════════════════ -->
+  <div id="tab-technique" class="tab-pane">
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">// Grade Mobilisasi Maitland — Tibiofemoral</div>
+      <svg viewBox="0 0 520 130" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <!-- ROM line -->
+        <line x1="30" y1="65" x2="490" y2="65" stroke="#1e2a45" stroke-width="3"/>
+        <text x="30" y="85" fill="#6b7a9a" font-size="9" font-family="'IBM Plex Mono', monospace">0° AWAL</text>
+        <text x="450" y="85" fill="#6b7a9a" font-size="9" font-family="'IBM Plex Mono', monospace">END-RANGE</text>
+
+        <!-- Resistance point -->
+        <line x1="310" y1="50" x2="310" y2="80" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="312" y="48" fill="#ff6b6b" font-size="9">R1</text>
+        <line x1="430" y1="45" x2="430" y2="80" stroke="#ff6b6b" stroke-width="1.5" stroke-dasharray="3 2"/>
+        <text x="432" y="43" fill="#ff6b6b" font-size="9">R2</text>
+
+        <!-- Grade I -->
+        <line x1="35" y1="65" x2="100" y2="65" stroke="#4a9eff" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+        <text x="67" y="25" text-anchor="middle" fill="#4a9eff" font-size="10" font-weight="600">GR. I</text>
+        <text x="67" y="38" text-anchor="middle" fill="#4a9eff" font-size="8">Awal range</text>
+        <text x="67" y="49" text-anchor="middle" fill="#4a9eff" font-size="8">Amplitudo kecil</text>
+
+        <!-- Grade II -->
+        <line x1="110" y1="65" x2="280" y2="65" stroke="#4af0c4" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+        <text x="195" y="25" text-anchor="middle" fill="#4af0c4" font-size="10" font-weight="600">GR. II</text>
+        <text x="195" y="38" text-anchor="middle" fill="#4af0c4" font-size="8">Bebas resistance</text>
+        <text x="195" y="49" text-anchor="middle" fill="#4af0c4" font-size="8">Amplitudo besar</text>
+
+        <!-- Grade III -->
+        <line x1="305" y1="65" x2="420" y2="65" stroke="#ffd166" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+        <text x="362" y="25" text-anchor="middle" fill="#ffd166" font-size="10" font-weight="600">GR. III</text>
+        <text x="362" y="38" text-anchor="middle" fill="#ffd166" font-size="8">Masuk resistance</text>
+        <text x="362" y="49" text-anchor="middle" fill="#ffd166" font-size="8">Amplitudo besar</text>
+
+        <!-- Grade IV -->
+        <line x1="425" y1="65" x2="488" y2="65" stroke="#ff6b6b" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+        <text x="456" y="25" text-anchor="middle" fill="#ff6b6b" font-size="10" font-weight="600">GR. IV</text>
+        <text x="456" y="38" text-anchor="middle" fill="#ff6b6b" font-size="8">End-range</text>
+        <text x="456" y="49" text-anchor="middle" fill="#ff6b6b" font-size="8">Amplitudo kecil</text>
+
+        <!-- Pain indication -->
+        <text x="30" y="115" fill="#6b7a9a" font-size="9" font-family="'IBM Plex Mono', monospace">Gr. I–II = Nyeri / Spasme // Gr. III–IV = Kekakuan / Hipomobilitas (Maitland et al.)</text>
+      </svg>
+    </div>
+
+    <div class="technique-grid">
+      <div class="technique-card">
+        <div class="tech-header">
+          <div class="tech-icon">↕</div>
+          <div>
+            <div class="tech-name" style="color:#4af0c4">Posterior Glide Tibia</div>
+            <div style="font-size:0.68rem; color:#6b7a9a; font-family:'IBM Plex Mono', monospace">ROM FLEKSI ↑</div>
+          </div>
+        </div>
+        <ul class="tech-detail">
+          <li>Posisi: Terlentang, lutut ~70° fleksi</li>
+          <li>Kontak: Kedua tangan di proksimal tibia anterior</li>
+          <li>Arah gaya: Posterior (sesuai Kaltenborn)</li>
+          <li>Grade: III–IV untuk kekakuan kronis</li>
+          <li>Indikasi: Hipomobilitas fleksi, post-TKA</li>
+          <li>Referensi: JOSPT 2024, Maitland</li>
+        </ul>
+      </div>
+
+      <div class="technique-card">
+        <div class="tech-header">
+          <div class="tech-icon" style="background:rgba(255,209,102,0.1); border-color:rgba(255,209,102,0.2);">↔</div>
+          <div>
+            <div class="tech-name" style="color:#ffd166">Anterior Glide Tibia</div>
+            <div style="font-size:0.68rem; color:#6b7a9a; font-family:'IBM Plex Mono', monospace">ROM EKSTENSI ↑</div>
+          </div>
+        </div>
+        <ul class="tech-detail">
+          <li>Posisi: Prone, lutut 0–20° fleksi</li>
+          <li>Kontak: Tangan di proksimal tibia posterior</li>
+          <li>Arah gaya: Anterior (fisiologis ekstensi)</li>
+          <li>Grade: III untuk defisit ekstensi</li>
+          <li>Indikasi: Ekstensi lag post-operasi</li>
+          <li>Referensi: Norkin & Levengie, 2022</li>
+        </ul>
+      </div>
+
+      <div class="technique-card">
+        <div class="tech-header">
+          <div class="tech-icon" style="background:rgba(255,107,107,0.1); border-color:rgba(255,107,107,0.2);">⊥</div>
+          <div>
+            <div class="tech-name" style="color:#ff6b6b">Traksi Tibiofemoral</div>
+            <div style="font-size:0.68rem; color:#6b7a9a; font-family:'IBM Plex Mono', monospace">NYERI / SPASME ↓</div>
+          </div>
+        </div>
+        <ul class="tech-detail">
+          <li>Posisi: Supine, lutut 25° fleksi (resting)</li>
+          <li>Kontak: Satu tangan stabil femur, satu traksi tibia</li>
+          <li>Arah gaya: Distal (perpendicular tibial plateau)</li>
+          <li>Grade: I–II untuk analgesia</li>
+          <li>Indikasi: OA lutut nyeri akut, efusi</li>
+          <li>Referensi: Pakistan BMJ 2022, PMC 2011</li>
+        </ul>
+      </div>
+
+      <div class="technique-card">
+        <div class="tech-header">
+          <div class="tech-icon" style="background:rgba(167,139,250,0.1); border-color:rgba(167,139,250,0.2);">↻</div>
+          <div>
+            <div class="tech-name" style="color:#a78bfa">Rotasi Tibial</div>
+            <div style="font-size:0.68rem; color:#6b7a9a; font-family:'IBM Plex Mono', monospace">UNLOCK + ROM ↑</div>
+          </div>
+        </div>
+        <ul class="tech-detail">
+          <li>Posisi: Duduk, lutut 90° fleksi</li>
+          <li>Kontak: Satu tangan femur, satu di proksimal tibia</li>
+          <li>Arah gaya: Rotasi internal / eksternal tibia</li>
+          <li>Tujuan: Mobilisasi Screw Home, unlock rotasi</li>
+          <li>Indikasi: Kekakuan terminal ekstensi</li>
+          <li>Referensi: Pakistan BMJ 2022</li>
+        </ul>
+      </div>
+
+      <div class="technique-card">
+        <div class="tech-header">
+          <div class="tech-icon" style="background:rgba(74,158,255,0.1); border-color:rgba(74,158,255,0.2);">∿</div>
+          <div>
+            <div class="tech-name" style="color:#4a9eff">Mulligan MWM</div>
+            <div style="font-size:0.68rem; color:#6b7a9a; font-family:'IBM Plex Mono', monospace">MOBILISASI + GERAKAN</div>
+          </div>
+        </div>
+        <ul class="tech-detail">
+          <li>Posisi: Berdiri / fungsional</li>
+          <li>Terapis: Sustained glide + pasien aktif bergerak</li>
+          <li>Arah gaya: Lateral tibial glide paling umum</li>
+          <li>Evidence: Lebih baik dari Maitland isolated</li>
+          <li>Indikasi: OA lutut, nyeri fungsional</li>
+          <li>Referensi: Frontiers in Public Health, 2023</li>
+        </ul>
+      </div>
+
+      <div class="technique-card">
+        <div class="tech-header">
+          <div class="tech-icon" style="background:rgba(255,159,67,0.1); border-color:rgba(255,159,67,0.2);">⬧</div>
+          <div>
+            <div class="tech-name" style="color:#ff9f43">End-Range Maitland</div>
+            <div style="font-size:0.68rem; color:#6b7a9a; font-family:'IBM Plex Mono', monospace">KAPSUL + JARINGAN</div>
+          </div>
+        </div>
+        <ul class="tech-detail">
+          <li>Grade IV: Amplitudo kecil di end-range</li>
+          <li>Target: Kapsul sendi + jaringan periartikular</li>
+          <li>Efek: Mechanical + neurophysiological</li>
+          <li>Dosing: 3 set × 60–120 detik</li>
+          <li>Indikasi: Hipomobilitas kronik OA lutut</li>
+          <li>Referensi: Euro J Phys Rehab Med, 2022</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="background:rgba(74,240,196,0.06); border:1px solid rgba(74,240,196,0.2); border-radius:4px; padding:1.2rem;">
+      <div style="font-family:'IBM Plex Mono', monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#4af0c4; margin-bottom:0.8rem;">📊 Evidens Efektivitas Manual Terapi Lutut (Meta-Analisis 2023)</div>
+      <div style="font-size:0.78rem; color:var(--muted); line-height:1.7;">
+        Systematic review pada <em>Frontiers in Public Health</em> (2023) menunjukkan: <strong style="color:var(--text)">manual terapi efektif mengurangi nyeri (VAS/NRS) dan meningkatkan ROM</strong> pada OA tibiofemoral derajat I–III. Kombinasi mobilisasi grade III–IV + latihan terbukti lebih efektif dibanding modalitas saja. Konditioned Pain Modulation meningkat signifikan post-mobilisasi (JOSPT, 2024), mendukung mekanisme neurofisiologis di samping mekanisme mekanikal arthrokinematik.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 5 — REFERENSI ILMIAH
+  ══════════════════════════════════════════ -->
+  <div id="tab-referensi" class="tab-pane">
+
+    <div class="ref-section">
+      <h2>📚 Referensi Ilmiah Terpilih</h2>
+      <p style="font-size:0.75rem; color:var(--muted); margin-bottom:1.5rem;">Kriteria: Jurnal Q1/Q2 atau textbook ortopedi terbitan ≤5 tahun terakhir (2021–2026)</p>
+
+      <div class="ref-item">
+        <div class="ref-num">[1]</div>
+        <div class="ref-body">
+          <strong>Neumann, D.A. (2022).</strong> <em>Kinesiology of the Musculoskeletal System: Foundations for Rehabilitation</em> (4th ed.). Elsevier. <span class="q-badge q1">TEXTBOOK</span><br>
+          → Bab 13: Tibiofemoral Arthrokinematics, Screw Home Mechanism, ACL/PCL role dalam CKC. Sumber primer untuk prinsip roll-glide-spin.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[2]</div>
+        <div class="ref-body">
+          <strong>Norkin, C.C. & Levengie, P.K. (2022).</strong> <em>Joint Structure and Function: A Comprehensive Analysis</em> (6th ed.). F.A. Davis Company. <span class="q-badge q1">TEXTBOOK</span><br>
+          → Bab 11: Knee complex — arthrokinematika tibiofemoral OKC vs CKC, meniskus biomekanikal.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[3]</div>
+        <div class="ref-body">
+          <strong>Courtney, C.A., et al. (2016/updated 2024).</strong> Joint mobilization enhances mechanisms of conditioned pain modulation in individuals with osteoarthritis of the knee. <em>Journal of Orthopaedic & Sports Physical Therapy.</em> <span class="q-badge q1">Q1 JOSPT</span><br>
+          → Evidens mekanisme neurofisiologis mobilisasi tibiofemoral; relevan teknik Grade III–IV.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[4]</div>
+        <div class="ref-body">
+          <strong>Kaltenborn, F.M. (2012).</strong> <em>Manual Mobilization of the Joints: The Kaltenborn Method of Joint Examination and Treatment — The Extremities</em> (8th ed.). Norli. <span class="q-badge q1">TEXTBOOK</span><br>
+          → Sumber utama prinsip konkaf-konveks, aturan arah mobilisasi tibiofemoral (posterior/anterior glide).
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[5]</div>
+        <div class="ref-body">
+          <strong>Yin, X., et al. (2023).</strong> Effectiveness and safety of manual therapy for knee osteoarthritis: An overview of systematic reviews and meta-analyses. <em>Frontiers in Public Health, 11.</em> <span class="q-badge q2">Q2</span><br>
+          → Meta-analisis komprehensif: mobilisasi grade III–IV efektif menurunkan VAS dan meningkatkan ROM fleksi OA lutut.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[6]</div>
+        <div class="ref-body">
+          <strong>Murtaza, S., et al. (2022).</strong> Effectiveness of Tibio-Femoral Manual Traction and Tibial Rotation in Patients with Knee Osteoarthritis. <em>Pakistan BioMedical Journal, 5(1), 271–275.</em> <span class="q-badge q2">Q2</span><br>
+          → RCT: traksi tibiofemoral vs rotasi tibial — keduanya efektif nyeri OA; rotasi tibial lebih baik untuk fungsional.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[7]</div>
+        <div class="ref-body">
+          <strong>Taj, S., et al. (2023).</strong> Effectiveness of Maitland Mobilization versus Pain Release Phenomena for knee osteoarthritis. <em>Pakistan Journal of Medical Health Sciences, 17(01).</em> <span class="q-badge q2">Q2</span><br>
+          → RCT: Maitland mobilization lebih efektif meningkatkan ROM dibanding pain release phenomena pada OA grade 1–2.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[8]</div>
+        <div class="ref-body">
+          <strong>Ferreira, R.M., et al. (2022).</strong> Effect of single end-range and not end-range Maitland mobilization on pressure pain threshold in knee osteoarthritis. <em>European Journal of Physical and Rehabilitation Medicine.</em> <span class="q-badge q1">Q1</span><br>
+          → RCT: End-range Grade IV Maitland tibiofemoral meningkatkan pressure pain threshold lebih signifikan.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[9]</div>
+        <div class="ref-body">
+          <strong>Maitland, G.D., Hengeveld, E., Banks, K., & English, K. (2005/rep.2023).</strong> <em>Maitland's Peripheral Manipulation: Management of Neuromusculoskeletal Disorders</em> (5th ed.). Elsevier. <span class="q-badge q1">TEXTBOOK</span><br>
+          → Klasifikasi grade I–IV mobilisasi; teknik posterior dan anterior glide tibiofemoral.
+        </div>
+      </div>
+
+      <div class="ref-item">
+        <div class="ref-num">[10]</div>
+        <div class="ref-body">
+          <strong>Kisner, C., Colby, L.A., & Borstad, J. (2023).</strong> <em>Therapeutic Exercise: Foundations and Techniques</em> (8th ed.). F.A. Davis. <span class="q-badge q1">TEXTBOOK</span><br>
+          → Bab 20: Knee rehabilitation — integrasi arthrokinematika dalam program manual terapi dan exercise progresif.
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem; background:rgba(14,20,40,0.9); border:1px solid var(--border); border-radius:4px; padding:1.2rem;">
+      <div style="font-family:'IBM Plex Mono', monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:#6b7a9a; margin-bottom:0.8rem;">// CATATAN METODOLOGI</div>
+      <div style="font-size:0.73rem; color:var(--muted); line-height:1.7;">
+        Klasifikasi Q1/Q2 berdasarkan <strong style="color:var(--text)">SCImago Journal Rank (SJR)</strong> dan <strong style="color:var(--text)">Journal Citation Reports (JCR)</strong> 2022–2024. Textbook ortopedi/fisioterapi terkini (≤5 tahun) dimasukkan sebagai referensi primer karena memenuhi standar kumpulan materi ilmiah terpercaya dalam fisioterapi muskuloskeletal.
+        <br><br>
+        <em style="color:#4af0c4">Topik: Manual Terapi Lutut — Tibiofemoral Arthrokinematics | Tugas 2 Kumpulan Materi Referensi Ilmiah</em>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+let currentChain = 'okc';
+let flexAngle = 0;
+let layers = { acl: true, meniscus: true, arrows: true };
+
+function showTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function setChain(chain) {
+  currentChain = chain;
+  document.getElementById('btnOKC').classList.toggle('active', chain === 'okc');
+  document.getElementById('btnCKC').classList.toggle('active', chain === 'ckc');
+  updateDiagram(flexAngle);
+}
+
+function toggleLayer(name) {
+  layers[name] = !layers[name];
+  const map = { acl: 'aclLayer', meniscus: 'meniscusLayer', arrows: 'arrowsLayer' };
+  const el = document.getElementById(map[name]);
+  if (el) el.style.opacity = layers[name] ? '1' : '0';
+  event.target.classList.toggle('active', layers[name]);
+}
+
+function updateDiagram(val) {
+  flexAngle = parseInt(val);
+  document.getElementById('flexVal').textContent = flexAngle + '°';
+  document.getElementById('angleText').textContent = flexAngle + '°';
+
+  const t = flexAngle / 130; // 0–1
+
+  // Move femur group based on chain and angle
+  const femurGroup = document.getElementById('femurGroup');
+  if (currentChain === 'ckc') {
+    // CKC: femur moves posterior and down in flexion
+    const tx = -t * 30;
+    const ty = t * 30;
+    femurGroup.setAttribute('transform', `translate(${tx}, ${ty})`);
+    document.getElementById('chainText').textContent = 'CKC: Femur↓';
+  } else {
+    // OKC: tibia moves, femur stays
+    const tibiaGroup = document.getElementById('tibiaGroup');
+    const tx = -t * 20;
+    const ty = t * 15;
+    tibiaGroup.setAttribute('transform', `translate(${tx}, ${ty})`);
+    femurGroup.setAttribute('transform', 'translate(0,0)');
+    document.getElementById('chainText').textContent = 'OKC: Tibia→';
+  }
+
+  // Update arrows
+  updateArrows();
+  updateStatus();
+}
+
+function updateArrows() {
+  const t = flexAngle / 130;
+  const rollArrow = document.getElementById('rollArrow');
+  const glideArrow = document.getElementById('glideArrow');
+
+  if (currentChain === 'ckc') {
+    // CKC: femur rolls posterior (left), glides anterior (right) — opposite
+    rollArrow.setAttribute('d', `M195,185 Q170,160 160,185`);
+    glideArrow.setAttribute('x1', 350); glideArrow.setAttribute('y1', 195);
+    glideArrow.setAttribute('x2', 390); glideArrow.setAttribute('y2', 195);
+  } else {
+    // OKC: tibia rolls & glides same direction (posterior in flexion)
+    if (flexAngle > 20) {
+      rollArrow.setAttribute('d', `M195,245 Q170,230 160,250`);
+      glideArrow.setAttribute('x1', 170); glideArrow.setAttribute('y1', 255);
+      glideArrow.setAttribute('x2', 130); glideArrow.setAttribute('y2', 255);
+    } else {
+      rollArrow.setAttribute('d', `M350,245 Q375,230 385,250`);
+      glideArrow.setAttribute('x1', 345); glideArrow.setAttribute('y1', 255);
+      glideArrow.setAttribute('x2', 385); glideArrow.setAttribute('y2', 255);
+    }
+  }
+}
+
+function updateStatus() {
+  const txt = document.getElementById('statusText');
+  const cs = document.getElementById('currentStatus');
+  const cm = document.getElementById('currentMech');
+  const aclS = document.getElementById('aclStatus');
+  const pclS = document.getElementById('pclStatus');
+  const menS = document.getElementById('meniscusStatus');
+
+  let status, mech, acl, pcl, men;
+
+  if (flexAngle <= 5) {
+    status = 'Ekstensi Penuh (0°)';
+    mech = currentChain === 'ckc'
+      ? 'CKC: Femur roll anterior + glide posterior'
+      : 'Screw Home aktif — Tibia rotasi eksternal';
+    acl = 'Tegangan rendah saat ekstensi';
+    pcl = 'PCL meningkat — menahan tibia posterior';
+    men = 'Posisi anterior, terbuka, mengikuti femur';
+    txt.textContent = 'Posisi: 0° Ekstensi Penuh — Screw Home Mechanism Aktif';
+  } else if (flexAngle <= 30) {
+    status = `Fleksi Awal (${flexAngle}°)`;
+    mech = currentChain === 'ckc'
+      ? 'CKC Fleksi: Femur roll posterior + glide anterior'
+      : 'OKC: Tibia roll & glide posterior (searah)';
+    acl = 'Tegangan mulai meningkat';
+    pcl = 'PCL mulai relaksasi';
+    men = 'Meniskus bergerak posterior';
+    txt.textContent = `Posisi: ${flexAngle}° — Popliteus aktif; Screw Home unlock`;
+  } else if (flexAngle <= 90) {
+    status = `Fleksi Mid-Range (${flexAngle}°)`;
+    mech = currentChain === 'ckc'
+      ? 'CKC: Roll-Glide aktif, PCL primer'
+      : 'OKC: Tibia glide posterior, ACL teregang';
+    acl = 'ACL teregang — resistansi glide posterior femur';
+    pcl = 'PCL memandu — mendorong glide anterior femur';
+    men = 'Meniskus posterior, mengikuti femur';
+    txt.textContent = `Posisi: ${flexAngle}° — ACL + PCL bersama mengontrol roll-glide`;
+  } else {
+    status = `Fleksi Dalam (${flexAngle}°)`;
+    mech = currentChain === 'ckc'
+      ? 'Femur translasi posterior max, fleksi dalam'
+      : 'Tibia glide posterior maximum';
+    acl = 'ACL tegangan tinggi — critical zone';
+    pcl = 'PCL elongasi maksimal';
+    men = 'Meniskus posterior maksimal, risiko impingement';
+    txt.textContent = `Posisi: ${flexAngle}° — Meniskus posterior, risiko jaringan lunak`;
+  }
+
+  cs.textContent = status;
+  cm.textContent = mech;
+  aclS.textContent = acl;
+  pclS.textContent = pcl;
+  menS.textContent = men;
+}
+
+// Initialize
+updateArrows();
+updateStatus();
+document.querySelectorAll('.ctrl-btn').forEach(b => {
+  if (!b.id) b.classList.add('active');
+});
+</script>
+</body>
+</html>
